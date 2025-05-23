@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integração com API - Laranja Real Imóveis</title>
+    <style>
+        :root {
+            --primary-color: #ff6b00;
+            --secondary-color: #333;
+            --text-color: #444;
+            --border-color: #ddd;
+            --light-bg: #f8f9fa;
+            --sidebar-width: 280px;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: var(--primary-color);
+        }
+        h2 {
+            color: var(--secondary-color);
+            margin-top: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        h3 {
+            margin-top: 25px;
+        }
+        code {
+            background-color: var(--light-bg);
+            padding: 3px 5px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background-color: var(--light-bg);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: var(--light-bg);
+        }
+        .notice {
+            background-color: #fff9e6;
+            border-left: 4px solid #ffe58f;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        /* Navegação superior */
+        .top-nav {
+            background-color: var(--secondary-color);
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .top-nav .logo {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        .top-nav .logo svg {
+            margin-right: 10px;
+            fill: var(--primary-color);
+        }
+        .top-nav ul {
+            display: flex;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        .top-nav li {
+            margin-left: 20px;
+        }
+        .top-nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        .top-nav a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Estrutura de conteúdo com sidebar */
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--light-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 5px;
+            margin-right: 30px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        .sidebar h4 {
+            color: var(--secondary-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+        .sidebar li {
+            margin-bottom: 8px;
+        }
+        .sidebar a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s;
+            display: block;
+            padding: 5px 0;
+            font-size: 0.95rem;
+        }
+        .sidebar a:hover {
+            color: var(--primary-color);
+        }
+        .sidebar a.active {
+            color: var(--primary-color);
+            font-weight: 600;
+            border-left: 3px solid var(--primary-color);
+            padding-left: 10px;
+            margin-left: -13px;
+        }
+        .sidebar .section-title {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        .sidebar .endpoint-link {
+            padding-left: 15px;
+            font-size: 0.9rem;
+        }
+        .main-content {
+            flex: 1;
+            max-width: calc(100% - var(--sidebar-width) - 30px);
+        }
+        
+        /* Voltar ao topo */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
+        }
+        .back-to-top:hover {
+            background-color: #e05e00;
+        }
+        
+        /* Antiga navegação de links */
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .nav-link {
+            padding: 10px 15px;
+            background-color: var(--light-bg);
+            border-radius: 5px;
+            text-decoration: none;
+            color: var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 30px;
+                position: static;
+                max-height: none;
+            }
+            .main-content {
+                max-width: 100%;
+            }
+        }
+        @media (max-width: 768px) {
+            .top-nav {
+                flex-direction: column;
+            }
+            .top-nav ul {
+                margin-top: 15px;
+            }
+            .top-nav li {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M12 2L1 12h3v9h6v-6h4v6h6v-9h3L12 2z"/>
+            </svg>
+            Laranja Real Imóveis
+        </a>
+        <ul>
+            <li><a href="/">Início</a></li>
+            <li><a href="/docs/frontend/">Frontend</a></li>
+            <li><a href="/backend-documentation.html">Backend</a></li>
+            <li><a href="/docs/admin/">Admin</a></li>
+            <li><a href="#contato">Contato</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Integração com API - Laranja Real Imóveis</h1>
+        <p>Documentação da integração do frontend com a API REST do backend</p>
+    </header>
+    
+    <div class="content-wrapper">
+        <aside class="sidebar">
+            <h4>Navegação</h4>
+            <ul>
+                <li><a href="#visao-geral">Visão Geral</a></li>
+                <li><a href="#cliente-api">Cliente de API</a></li>
+                <li><a href="#autenticacao">Autenticação com JWT</a></li>
+                <li><a href="#estrutura-servicos">Estrutura de Serviços</a></li>
+                <li><a href="#tratamento-erros">Tratamento de Erros</a></li>
+                <li><a href="#upload-arquivos">Upload de Arquivos</a></li>
+                <li><a href="#comunicacao-tempo-real">Comunicação em Tempo Real</a></li>
+            </ul>
+            <h4>Documentos Relacionados</h4>
+            <ul>
+                <li><a href="index.html">Visão Geral Frontend</a></li>
+                <li><a href="components.html">Componentes</a></li>
+                <li><a href="hooks.html">Hooks Personalizados</a></li>
+                <li><a href="../../backend-documentation.html">Documentação do Backend</a></li>
+            </ul>
+        </aside>
+
+        <div class="main-content">
+            <section id="visao-geral">
+                <h2>Introdução</h2>
+                <p>Esta documentação descreve como o frontend React do sistema Laranja Real Imóveis se integra com a API backend Laravel, incluindo detalhes sobre o cliente HTTP, interceptadores, estratégias de cache e tratamento de erros.</p>
+                
+                <div class="notice">
+                    <strong>Base URL da API:</strong> <code>http://localhost:8000/api</code> (desenvolvimento) ou <code>https://api.laranjarealimoveis.com.br/api</code> (produção)
+                </div>
+            </section>
+
+            <section id="cliente-api">
+                <h2>Cliente HTTP</h2>
+                <p>O frontend utiliza Axios como cliente HTTP para realizar as requisições à API. A configuração base do cliente está centralizada no arquivo <code>src/lib/api.ts</code>.</p>
+                
+                <h3>Configuração Básica</h3>
+                <pre>
+// src/lib/api.ts
+import axios, { AxiosError, AxiosInstance } from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+
+const api: AxiosInstance = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  },
+  timeout: 15000, // 15 segundos
+});
+
+export default api;</pre>
+                
+                <h3>Interceptadores de Requisição</h3>
+                <p>Os interceptadores são utilizados para adicionar o token de autenticação e manipular cabeçalhos automaticamente:</p>
+                
+                <pre>
+// Adicionar token JWT em todas as requisições
+api.interceptors.request.use(
+  config => {
+    const token = localStorage.getItem('token');
+    
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);</pre>
+                
+                <h3>Interceptadores de Resposta</h3>
+                <p>Interceptadores de resposta tratam erros comuns e renovam tokens expirados:</p>
+                
+                <pre>
+// Tratamento global de respostas e erros
+api.interceptors.response.use(
+  response => {
+    // Retornamos diretamente os dados, sem precisar fazer .data em todo lugar
+    return response.data;
+  },
+  async (error: AxiosError) => {
+    // Quando o token expirou
+    if (error.response?.status === 401) {
+      try {
+        // Tentar fazer refresh do token
+        const refreshToken = localStorage.getItem('refresh_token');
+        
+        if (refreshToken) {
+          // Criar uma instância temporária do Axios que não usa os interceptors
+          const originalRequest = error.config;
+          const refreshResponse = await axios.post(`${API_URL}/auth/refresh`, {
+            refresh_token: refreshToken
+          });
+          
+          if (refreshResponse.data.success) {
+            // Salvar novo token
+            localStorage.setItem('token', refreshResponse.data.token);
+            localStorage.setItem('refresh_token', refreshResponse.data.refresh_token);
+            
+            // Refazer a requisição original com o novo token
+            if (originalRequest) {
+              originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.token}`;
+              return axios(originalRequest);
+            }
+          }
+        }
+        
+        // Se não conseguir renovar o token, faz logout
+        localStorage.removeItem('token');
+        localStorage.removeItem('refresh_token');
+        window.location.href = '/login?expired=true';
+      } catch (refreshError) {
+        // Em caso de erro no refresh, faz logout
+        localStorage.removeItem('token');
+        localStorage.removeItem('refresh_token');
+        window.location.href = '/login?expired=true';
+      }
+    }
+    
+    // Para erros 404 (recurso não encontrado)
+    if (error.response?.status === 404) {
+      console.error('Recurso não encontrado:', error.config?.url);
+    }
+    
+    // Para erros 500 (erro do servidor)
+    if (error.response?.status && error.response.status >= 500) {
+      console.error('Erro do servidor:', error.response.data);
+    }
+    
+    // Para erros de timeout
+    if (error.code === 'ECONNABORTED') {
+      console.error('Timeout na requisição:', error.config?.url);
+    }
+    
+    // Para erros de rede
+    if (!error.response) {
+      console.error('Erro de rede ou servidor indisponível');
+    }
+    
+    return Promise.reject(error);
+  }
+);</pre>
+                
+                <h3>Funções Utilitárias</h3>
+                <p>Além do cliente base, são fornecidas funções utilitárias para facilitar o uso:</p>
+                
+                <pre>
+// Funções utilitárias para requisições
+export const apiService = {
+  /**
+   * Realiza uma requisição GET
+   */
+  get: async (url: string, params = {}) => {
+    try {
+      const response = await api.get(url, { params });
+      return response;
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    }
+  },
+  
+  /**
+   * Realiza uma requisição POST
+   */
+  post: async (url: string, data = {}, config = {}) => {
+    try {
+      const response = await api.post(url, data, config);
+      return response;
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    }
+  },
+  
+  /**
+   * Realiza uma requisição PUT
+   */
+  put: async (url: string, data = {}) => {
+    try {
+      const response = await api.put(url, data);
+      return response;
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    }
+  },
+  
+  /**
+   * Realiza uma requisição DELETE
+   */
+  delete: async (url: string) => {
+    try {
+      const response = await api.delete(url);
+      return response;
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    }
+  }
+};
+
+/**
+ * Função para tratamento centralizado de erros da API
+ */
+function handleApiError(error: any) {
+  // Mensagens personalizadas para o usuário
+  let userMessage = 'Ocorreu um erro ao processar sua solicitação';
+  
+  if (error.response) {
+    // O servidor respondeu com um código de erro
+    const status = error.response.status;
+    const backendMessage = error.response.data?.message;
+    
+    if (backendMessage) {
+      userMessage = backendMessage;
+    } else if (status === 400) {
+      userMessage = 'Dados inválidos. Verifique as informações e tente novamente.';
+    } else if (status === 403) {
+      userMessage = 'Você não tem permissão para acessar este recurso.';
+    } else if (status === 404) {
+      userMessage = 'O recurso solicitado não existe ou foi removido.';
+    } else if (status === 422) {
+      userMessage = 'Dados de formulário inválidos. Verifique os campos obrigatórios.';
+    } else if (status >= 500) {
+      userMessage = 'Erro no servidor. Nossa equipe foi notificada.';
+    }
+  } else if (error.request) {
+    // A requisição foi feita mas não houve resposta
+    userMessage = 'Não foi possível se comunicar com o servidor. Verifique sua conexão.';
+  }
+  
+  // Aqui poderia mostrar o erro na tela usando uma notificação toast
+  // toast.error(userMessage);
+  
+  // Ou retornar para o componente exibir
+  return userMessage;
+}</pre>
+            </section>
+
+            <section id="autenticacao">
+                <h2>Autenticação e Interceptadores</h2>
+                <p>A integração utiliza interceptadores para gerenciar tokens de autenticação e tratamento de erros.</p>
+            </section>
+
+            <section id="estrutura-servicos">
+                <h2>Serviços de API</h2>
+                <p>Os serviços de API organizam as chamadas por domínio, facilitando a manutenção e reutilização.</p>
+            </section>
+
+            <section id="tratamento-erros">
+                <h2>Tratamento de Erros</h2>
+                <p>A aplicação implementa estratégias robustas para tratamento de erros nas chamadas à API.</p>
+            </section>
+
+            <section id="upload-arquivos">
+                <h2>Cache e Performance</h2>
+                <p>Estratégias de cache são utilizadas para melhorar a performance e reduzir chamadas à API.</p>
+            </section>
+
+            <section id="comunicacao-tempo-real">
+                <h2>Comunicação em Tempo Real</h2>
+                <p>Aplicação de comunicação em tempo real utilizando WebSockets.</p>
+            </section>
+        </div>
+    </div>
+
+    <a href="#" class="back-to-top">&#8679;</a>
+
+    <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center;">
+        <p>Laranja Real Imóveis &copy; 2023-2024 - Todos os direitos reservados</p>
+        <p>Última atualização: Julho de 2024</p>
+    </footer>
+
+    <script>
+        // Script para marcar o link ativo na sidebar quando o usuário rola a página
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.sidebar a');
+            
+            function highlightNav() {
+                let scrollY = window.pageYOffset;
+                
+                sections.forEach(section => {
+                    const sectionHeight = section.offsetHeight;
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionId = section.getAttribute('id');
+                    
+                    if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === '#' + sectionId) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', highlightNav);
+        });
+    </script>
+</body>
+</html> 

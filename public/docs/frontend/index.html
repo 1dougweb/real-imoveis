@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação do Frontend - Laranja Real Imóveis</title>
+    <style>
+        :root {
+            --primary-color: #ff6b00;
+            --secondary-color: #333;
+            --text-color: #444;
+            --border-color: #ddd;
+            --light-bg: #f8f9fa;
+            --sidebar-width: 280px;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: var(--primary-color);
+        }
+        h2 {
+            color: var(--secondary-color);
+            margin-top: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        h3 {
+            margin-top: 25px;
+        }
+        code {
+            background-color: var(--light-bg);
+            padding: 3px 5px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background-color: var(--light-bg);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: var(--light-bg);
+        }
+        .component {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+        .notice {
+            background-color: #fff9e6;
+            border-left: 4px solid #ffe58f;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        /* Navegação superior */
+        .top-nav {
+            background-color: var(--secondary-color);
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .top-nav .logo {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        .top-nav .logo svg {
+            margin-right: 10px;
+            fill: var(--primary-color);
+        }
+        .top-nav ul {
+            display: flex;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        .top-nav li {
+            margin-left: 20px;
+        }
+        .top-nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        .top-nav a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Estrutura de conteúdo com sidebar */
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--light-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 5px;
+            margin-right: 30px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        .sidebar h4 {
+            color: var(--secondary-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+        .sidebar li {
+            margin-bottom: 8px;
+        }
+        .sidebar a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s;
+            display: block;
+            padding: 5px 0;
+            font-size: 0.95rem;
+        }
+        .sidebar a:hover {
+            color: var(--primary-color);
+        }
+        .sidebar a.active {
+            color: var(--primary-color);
+            font-weight: 600;
+            border-left: 3px solid var(--primary-color);
+            padding-left: 10px;
+            margin-left: -13px;
+        }
+        .sidebar .section-title {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        .sidebar .endpoint-link {
+            padding-left: 15px;
+            font-size: 0.9rem;
+        }
+        .main-content {
+            flex: 1;
+            max-width: calc(100% - var(--sidebar-width) - 30px);
+        }
+        
+        /* Voltar ao topo */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
+        }
+        .back-to-top:hover {
+            background-color: #e05e00;
+        }
+        
+        /* Antiga navegação de links transformada em navegação por tabs no main-content */
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .nav-link {
+            padding: 10px 15px;
+            background-color: var(--light-bg);
+            border-radius: 5px;
+            text-decoration: none;
+            color: var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 30px;
+                position: static;
+                max-height: none;
+            }
+            .main-content {
+                max-width: 100%;
+            }
+        }
+        @media (max-width: 768px) {
+            .top-nav {
+                flex-direction: column;
+            }
+            .top-nav ul {
+                margin-top: 15px;
+            }
+            .top-nav li {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M12 2L1 12h3v9h6v-6h4v6h6v-9h3L12 2z"/>
+            </svg>
+            Laranja Real Imóveis
+        </a>
+        <ul>
+            <li><a href="/">Início</a></li>
+            <li><a href="/docs/frontend/">Frontend</a></li>
+            <li><a href="/backend-documentation.html">Backend</a></li>
+            <li><a href="/docs/admin/">Admin</a></li>
+            <li><a href="#contato">Contato</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Documentação do Frontend - Laranja Real Imóveis</h1>
+        <p>Documentação completa da aplicação frontend do sistema imobiliário</p>
+    </header>
+    
+    <div class="content-wrapper">
+        <aside class="sidebar">
+            <h4>Navegação</h4>
+            <ul>
+                <li><a href="#visao-geral">Visão Geral</a></li>
+                <li><a href="#arquitetura">Arquitetura do Frontend</a></li>
+                <li><a href="#fluxo-navegacao">Fluxo de Navegação</a></li>
+                <li><a href="#autenticacao">Autenticação e Autorização</a></li>
+                <li><a href="#integracao-backend">Integração com o Backend</a></li>
+            </ul>
+            <h4>Documentos Relacionados</h4>
+            <ul>
+                <li><a href="components.html">Componentes do Frontend</a></li>
+                <li><a href="hooks.html">Hooks Personalizados</a></li>
+                <li><a href="api-integration.html">Integração com API</a></li>
+                <li><a href="../../backend-documentation.html">Documentação do Backend</a></li>
+            </ul>
+        </aside>
+
+        <div class="main-content">
+            <section id="visao-geral">
+                <h2>Visão Geral</h2>
+                <p>Este documento descreve a arquitetura e os componentes do frontend desenvolvido para o sistema Laranja Real Imóveis. O frontend foi construído utilizando React com TypeScript, seguindo as melhores práticas de desenvolvimento moderno.</p>
+                
+                <div class="notice">
+                    <strong>Ambiente de Desenvolvimento:</strong>
+                    <ul>
+                        <li>Node.js 16+</li>
+                        <li>React 18</li>
+                        <li>TypeScript 5</li>
+                        <li>Vite como bundler</li>
+                        <li>TailwindCSS para estilização</li>
+                        <li>Shadcn/UI para componentes base</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="arquitetura">
+                <h2>Arquitetura do Frontend</h2>
+                <p>A aplicação frontend segue uma arquitetura baseada em componentes, com separação de responsabilidades e organização modular do código.</p>
+
+                <h3>Principais Características</h3>
+                <ul>
+                    <li><strong>Componentização:</strong> Baseada em princípios de design atômico, organizando componentes por complexidade e responsabilidade</li>
+                    <li><strong>Hooks personalizados:</strong> Encapsulamento de lógica reutilizável em hooks customizados</li>
+                    <li><strong>React Router:</strong> Gerenciamento de rotas e navegação entre páginas</li>
+                    <li><strong>Estados locais e globais:</strong> Combinação de useState e useContext para gerenciamento de estado</li>
+                    <li><strong>Autenticação JWT:</strong> Gerenciamento de sessão do usuário baseado em tokens</li>
+                    <li><strong>Consumo de API REST:</strong> Integração com o backend através de serviços estruturados</li>
+                    <li><strong>Responsividade:</strong> Design adaptável para diferentes tamanhos de tela</li>
+                    <li><strong>Acessibilidade:</strong> Conformidade com diretrizes WCAG para tornar a aplicação acessível a todos os usuários</li>
+                </ul>
+
+                <h3>Estrutura de Diretórios</h3>
+                <pre>
+src/
+├── components/
+│   ├── ui/             # Componentes base (botões, inputs, etc.)
+│   ├── layout/         # Componentes de layout (cabeçalho, rodapé, etc.)
+│   ├── properties/     # Componentes específicos para imóveis
+│   ├── clients/        # Componentes específicos para clientes
+│   └── common/         # Componentes genéricos reutilizáveis
+├── hooks/              # Hooks personalizados
+├── context/            # Contextos para gerenciamento de estado global
+├── lib/                # Utilitários e bibliotecas
+│   ├── api.ts          # Cliente de API e interceptores
+│   ├── utils.ts        # Funções utilitárias
+│   └── constants.ts    # Constantes da aplicação
+├── pages/              # Componentes de página
+│   ├── admin/          # Páginas administrativas
+│   ├── client/         # Páginas para clientes
+│   └── properties/     # Páginas relacionadas a imóveis
+└── types/              # Definições de tipos TypeScript
+</pre>
+            </section>
+
+            <section id="fluxo-navegacao">
+                <h2>Fluxo de Navegação</h2>
+                <p>A aplicação apresenta diferentes fluxos de navegação conforme o tipo de usuário:</p>
+
+                <h3>Usuários Não Autenticados</h3>
+                <ul>
+                    <li><strong>Página Inicial:</strong> Apresentação dos imóveis em destaque e funcionalidades de busca</li>
+                    <li><strong>Busca de Imóveis:</strong> Filtros avançados para encontrar imóveis</li>
+                    <li><strong>Detalhes do Imóvel:</strong> Visualização detalhada de um imóvel específico</li>
+                    <li><strong>Login/Registro:</strong> Autenticação e criação de conta</li>
+                </ul>
+
+                <h3>Clientes Autenticados</h3>
+                <p>Além das funcionalidades acima, clientes podem:</p>
+                <ul>
+                    <li><strong>Meu Perfil:</strong> Gerenciamento de dados pessoais</li>
+                    <li><strong>Favoritos:</strong> Imóveis marcados como favoritos</li>
+                    <li><strong>Visitas:</strong> Agendamento e histórico de visitas</li>
+                    <li><strong>Propostas:</strong> Visualização de propostas enviadas</li>
+                </ul>
+
+                <h3>Administradores e Agentes</h3>
+                <p>Acesso ao painel administrativo com:</p>
+                <ul>
+                    <li><strong>Dashboard:</strong> Visão geral do sistema</li>
+                    <li><strong>Gerenciamento de Imóveis:</strong> CRUD de imóveis</li>
+                    <li><strong>Gerenciamento de Clientes:</strong> CRUD de clientes/pessoas</li>
+                    <li><strong>Agendamento de Visitas:</strong> Controle de visitas</li>
+                    <li><strong>Contratos:</strong> Gerenciamento de contratos</li>
+                    <li><strong>Financeiro:</strong> Controle de transações financeiras</li>
+                    <li><strong>Relatórios:</strong> Geração de relatórios</li>
+                </ul>
+            </section>
+
+            <section id="autenticacao">
+                <h2>Autenticação e Autorização</h2>
+                <p>O sistema de autenticação do frontend é baseado em tokens JWT, com gerenciamento de sessão e controle de acesso:</p>
+
+                <h3>Processo de Autenticação</h3>
+                <ol>
+                    <li>Usuário realiza login fornecendo email e senha</li>
+                    <li>Backend valida as credenciais e retorna um token JWT</li>
+                    <li>Frontend armazena o token no localStorage</li>
+                    <li>Token é incluído como Authorization header em todas as requisições subsequentes</li>
+                    <li>Context API gerencia o estado de autenticação globalmente</li>
+                </ol>
+
+                <h3>Controle de Acesso</h3>
+                <p>O acesso às rotas e funcionalidades é controlado com base nas funções do usuário:</p>
+                <pre>
+// Exemplo de componente de rota protegida
+function ProtectedRoute({ children, roles }) {
+  const { user, isAuthenticated } = useAuth();
+  const hasPermission = roles ? roles.some(role => user?.roles.includes(role)) : true;
+
+  if (!isAuthenticated) {
+    return &lt;Navigate to="/login" /&gt;;
+  }
+
+  if (!hasPermission) {
+    return &lt;Navigate to="/unauthorized" /&gt;;
+  }
+
+  return children;
+}
+</pre>
+            </section>
+
+            <section id="integracao-backend">
+                <h2>Integração com o Backend</h2>
+                <p>A comunicação com a API do backend é centralizada em serviços especializados:</p>
+
+                <h3>Cliente de API</h3>
+                <p>Um cliente Axios configurado com interceptors para gerenciar tokens, erros e renovação de autenticação:</p>
+                <pre>
+// src/lib/api.ts
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+});
+
+// Interceptor para incluir o token JWT em todas as requisições
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+export default api;</pre>
+
+                <h3>Serviços Especializados</h3>
+                <p>A comunicação com a API é organizada em serviços especializados por domínio:</p>
+                <ul>
+                    <li><code>authService</code>: Métodos para autenticação, registro e gerenciamento de sessão</li>
+                    <li><code>propertyService</code>: Operações relacionadas a imóveis</li>
+                    <li><code>clientService</code>: Operações relacionadas a clientes</li>
+                    <li><code>visitService</code>: Operações relacionadas a visitas</li>
+                    <li><code>contractService</code>: Operações relacionadas a contratos</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Gerenciamento de Estado</h2>
+                <p>A aplicação utiliza diferentes estratégias para gerenciamento de estado:</p>
+
+                <h3>Estado Local</h3>
+                <p>Utilização de <code>useState</code> e <code>useReducer</code> para gerenciar estado de componentes individuais.</p>
+
+                <h3>Estado Global</h3>
+                <p>Context API para compartilhar estado entre múltiplos componentes:</p>
+                <pre>
+// src/context/AuthContext.tsx
+import { createContext, useContext, useState, useEffect } from 'react';
+import { User } from '../types';
+import { authService } from '../lib/services/authService';
+
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+  login: (email: string, password: string) => Promise&lt;void&gt;;
+  logout: () => void;
+  refreshUser: () => Promise&lt;void&gt;;
+}
+
+const AuthContext = createContext&lt;AuthContextType&gt;(null!);
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState&lt;User | null&gt;(null);
+  const [loading, setLoading] = useState(true);
+
+  const isAuthenticated = !!user;
+
+  useEffect(() => {
+    // Verificar token e carregar usuário ao iniciar
+    const loadUser = async () => {
+      try {
+        // Lógica para carregar usuário com base no token armazenado
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUser();
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    // Lógica de login
+  };
+
+  const logout = () => {
+    // Lógica de logout
+  };
+
+  const refreshUser = async () => {
+    // Atualizar dados do usuário
+  };
+
+  return (
+    &lt;AuthContext.Provider value={{ user, isAuthenticated, loading, login, logout, refreshUser }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+}
+
+export const useAuth = () => useContext(AuthContext);
+</pre>
+            </section>
+
+            <section>
+                <h2>Formulários e Validação</h2>
+                <p>A aplicação utiliza uma abordagem consistente para formulários e validação:</p>
+
+                <h3>Bibliotecas Utilizadas</h3>
+                <ul>
+                    <li><strong>React Hook Form:</strong> Gerenciamento de formulários com ótima performance</li>
+                    <li><strong>Zod:</strong> Validação de esquemas tipados</li>
+                </ul>
+
+                <h3>Exemplo de Implementação</h3>
+                <pre>
+// Exemplo de formulário de cadastro de imóvel
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+// Esquema de validação
+const propertySchema = z.object({
+  title: z.string().min(5, 'Título deve ter pelo menos 5 caracteres'),
+  description: z.string().min(20, 'Descrição deve ser mais detalhada'),
+  property_type_id: z.number().positive('Selecione um tipo de imóvel'),
+  price: z.number().positive('Preço deve ser positivo'),
+  // ...outros campos com suas validações
+});
+
+type PropertyFormValues = z.infer&lt;typeof propertySchema&gt;;
+
+function PropertyForm() {
+  const { register, handleSubmit, formState: { errors } } = useForm&lt;PropertyFormValues&gt;({
+    resolver: zodResolver(propertySchema),
+    defaultValues: {
+      // Valores iniciais
+    }
+  });
+
+  const onSubmit = async (data: PropertyFormValues) => {
+    try {
+      // Lógica para enviar dados para API
+    } catch (error) {
+      // Tratamento de erros
+    }
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      {/* Campos do formulário */}
+    &lt;/form&gt;
+  );
+}
+</pre>
+            </section>
+
+            <section>
+                <h2>Design System e Componentes</h2>
+                <p>A interface utiliza um design system consistente baseado em componentes reutilizáveis:</p>
+
+                <h3>Princípios de Design</h3>
+                <ul>
+                    <li><strong>Consistência:</strong> Elementos visuais e comportamentos consistentes em toda a aplicação</li>
+                    <li><strong>Acessibilidade:</strong> Componentes acessíveis para todos os usuários</li>
+                    <li><strong>Responsividade:</strong> Adaptação a diferentes tamanhos de tela</li>
+                    <li><strong>Performance:</strong> Otimização para carregamento rápido</li>
+                </ul>
+
+                <h3>Implementação</h3>
+                <p>Combinação de componentes personalizados e biblioteca Shadcn/UI com TailwindCSS:</p>
+                <pre>
+// src/components/ui/Button.tsx
+import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '../../lib/utils';
+
+const buttonVariants = cva(
+  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none',
+  {
+    variants: {
+      variant: {
+        default: 'bg-primary text-white hover:bg-primary/90',
+        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+        secondary: 'bg-secondary text-white hover:bg-secondary/90',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        link: 'underline-offset-4 hover:underline text-primary',
+      },
+      size: {
+        default: 'h-10 py-2 px-4',
+        sm: 'h-9 px-3',
+        lg: 'h-11 px-8',
+        icon: 'h-10 w-10',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+    },
+  }
+);
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;,
+    VariantProps&lt;typeof buttonVariants&gt; {
+  asChild?: boolean;
+}
+
+const Button = React.forwardRef&lt;HTMLButtonElement, ButtonProps&gt;(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? 'div' : 'button';
+    return (
+      &lt;Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      /&gt;
+    );
+  }
+);
+Button.displayName = 'Button';
+
+export { Button, buttonVariants };
+</pre>
+            </section>
+
+            <section>
+                <h2>Deployment e Build</h2>
+                <p>O processo de build e deployment foi otimizado para fornecer a melhor experiência tanto para desenvolvedores quanto para usuários finais.</p>
+
+                <h3>Scripts Disponíveis</h3>
+                <ul>
+                    <li><code>npm run dev</code>: Inicia o servidor de desenvolvimento</li>
+                    <li><code>npm run build</code>: Cria uma versão otimizada para produção</li>
+                    <li><code>npm run preview</code>: Executa localmente a versão de produção</li>
+                    <li><code>npm run lint</code>: Verifica problemas no código</li>
+                    <li><code>npm run test</code>: Executa testes automatizados</li>
+                </ul>
+
+                <h3>Otimizações</h3>
+                <ul>
+                    <li><strong>Code Splitting:</strong> Carregamento sob demanda de partes da aplicação</li>
+                    <li><strong>Prefetching:</strong> Pré-carregamento de recursos para navegação mais rápida</li>
+                    <li><strong>Lazy Loading:</strong> Carregamento preguiçoso de imagens e componentes pesados</li>
+                    <li><strong>Bundle Analyzer:</strong> Análise e otimização do tamanho dos pacotes</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+
+    <a href="#" class="back-to-top">&#8679;</a>
+
+    <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center;">
+        <p>Laranja Real Imóveis &copy; 2023-2024 - Todos os direitos reservados</p>
+        <p>Última atualização: Julho de 2024</p>
+    </footer>
+
+    <script>
+        // Script para marcar o link ativo na sidebar quando o usuário rola a página
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.sidebar a');
+            
+            function highlightNav() {
+                let scrollY = window.pageYOffset;
+                
+                sections.forEach(section => {
+                    const sectionHeight = section.offsetHeight;
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionId = section.getAttribute('id');
+                    
+                    if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === '#' + sectionId) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', highlightNav);
+        });
+    </script>
+</body>
+</html> 

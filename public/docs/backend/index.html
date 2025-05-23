@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação do Backend - Laranja Real Imóveis</title>
+    <style>
+        :root {
+            --primary-color: #ff6b00;
+            --secondary-color: #333;
+            --text-color: #444;
+            --border-color: #ddd;
+            --light-bg: #f8f9fa;
+            --sidebar-width: 280px;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: var(--primary-color);
+        }
+        h2 {
+            color: var(--secondary-color);
+            margin-top: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        h3 {
+            margin-top: 25px;
+        }
+        code {
+            background-color: var(--light-bg);
+            padding: 3px 5px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background-color: var(--light-bg);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: var(--light-bg);
+        }
+        .endpoint {
+            margin-bottom: 30px;
+        }
+        .http-method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .get {
+            background-color: #61affe;
+        }
+        .post {
+            background-color: #49cc90;
+        }
+        .put {
+            background-color: #fca130;
+        }
+        .delete {
+            background-color: #f93e3e;
+        }
+        .notice {
+            background-color: #fff9e6;
+            border-left: 4px solid #ffe58f;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        /* Navegação superior */
+        .top-nav {
+            background-color: var(--secondary-color);
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .top-nav .logo {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        .top-nav .logo svg {
+            margin-right: 10px;
+            fill: var(--primary-color);
+        }
+        .top-nav ul {
+            display: flex;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        .top-nav li {
+            margin-left: 20px;
+        }
+        .top-nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        .top-nav a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Estrutura de conteúdo com sidebar */
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--light-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 5px;
+            margin-right: 30px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        .sidebar h4 {
+            color: var(--secondary-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+        .sidebar li {
+            margin-bottom: 8px;
+        }
+        .sidebar a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s;
+            display: block;
+            padding: 5px 0;
+            font-size: 0.95rem;
+        }
+        .sidebar a:hover {
+            color: var(--primary-color);
+        }
+        .sidebar a.active {
+            color: var(--primary-color);
+            font-weight: 600;
+            border-left: 3px solid var(--primary-color);
+            padding-left: 10px;
+            margin-left: -13px;
+        }
+        .sidebar .section-title {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        .sidebar .endpoint-link {
+            padding-left: 15px;
+            font-size: 0.9rem;
+        }
+        .main-content {
+            flex: 1;
+            max-width: calc(100% - var(--sidebar-width) - 30px);
+        }
+        
+        /* Voltar ao topo */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
+        }
+        .back-to-top:hover {
+            background-color: #e05e00;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 30px;
+                position: static;
+                max-height: none;
+            }
+            .main-content {
+                max-width: 100%;
+            }
+        }
+        @media (max-width: 768px) {
+            .top-nav {
+                flex-direction: column;
+            }
+            .top-nav ul {
+                margin-top: 15px;
+            }
+            .top-nav li {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M12 2L1 12h3v9h6v-6h4v6h6v-9h3L12 2z"/>
+            </svg>
+            Laranja Real Imóveis
+        </a>
+        <ul>
+            <li><a href="/">Início</a></li>
+            <li><a href="/docs/frontend/">Frontend</a></li>
+            <li><a href="/backend-documentation.html">Backend</a></li>
+            <li><a href="/docs/admin/">Admin</a></li>
+            <li><a href="#contato">Contato</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Documentação do Backend - Laranja Real Imóveis</h1>
+        <p>Documentação completa da API e estrutura do backend do sistema imobiliário</p>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar">
+            <h4>Navegação</h4>
+            <ul>
+                <li><a href="#visao-geral">Visão Geral</a></li>
+                <li><a href="#estrutura-banco-dados">Estrutura do Banco de Dados</a></li>
+                <li><a href="#autenticacao-autorizacao">Autenticação e Autorização</a></li>
+                <li><a href="#api-endpoints">API - Endpoints</a></li>
+                <li class="section-title">Recursos</li>
+                <li><a href="#imoveis" class="endpoint-link">Imóveis</a></li>
+                <li><a href="#tipos-imoveis" class="endpoint-link">Tipos de Imóveis</a></li>
+                <li><a href="#caracteristicas" class="endpoint-link">Características</a></li>
+                <li><a href="#pessoas" class="endpoint-link">Pessoas</a></li>
+                <li><a href="#cidades-bairros" class="endpoint-link">Cidades e Bairros</a></li>
+                <li><a href="#visitas" class="endpoint-link">Visitas</a></li>
+                <li><a href="#contratos" class="endpoint-link">Contratos</a></li>
+                <li><a href="#financeiro" class="endpoint-link">Financeiro</a></li>
+                <li><a href="#relatorios" class="endpoint-link">Relatórios</a></li>
+                <li><a href="#dashboard" class="endpoint-link">Dashboard</a></li>
+                <li class="section-title">Módulos Administrativos</li>
+                <li><a href="#bancos-contas" class="endpoint-link">Bancos e Contas</a></li>
+                <li><a href="#frequencias" class="endpoint-link">Frequências</a></li>
+                <li><a href="#tipos-pagamento" class="endpoint-link">Tipos de Pagamento</a></li>
+                <li><a href="#comissoes" class="endpoint-link">Comissões</a></li>
+                <li><a href="#imagens-propriedades" class="endpoint-link">Imagens de Propriedades</a></li>
+                <li><a href="#documentos" class="endpoint-link">Documentos</a></li>
+                <li><a href="#cargos" class="endpoint-link">Cargos</a></li>
+                <li class="section-title">Arquitetura</li>
+                <li><a href="#recursos-midia">Recursos de Mídia</a></li>
+                <li><a href="#estrutura-diretorios">Estrutura de Diretórios</a></li>
+                <li><a href="#instalacao-configuracao">Instalação e Configuração</a></li>
+                <li><a href="#integracao-frontend">Integração com Frontend</a></li>
+                <li class="section-title">Atualizações</li>
+                <li><a href="#implementacoes-recentes" class="endpoint-link">Implementações Recentes</a></li>
+            </ul>
+        </aside>
+
+        <div class="main-content">
+            <section id="visao-geral">
+                <h2>Visão Geral</h2>
+                <p>Este documento descreve a arquitetura e os endpoints da API desenvolvida para o sistema Laranja Real Imóveis. O backend foi construído utilizando o framework Laravel, seguindo as melhores práticas de desenvolvimento.</p>
+                
+                <div class="notice">
+                    <strong>Ambiente de Desenvolvimento:</strong>
+                    <ul>
+                        <li>PHP 8.1+</li>
+                        <li>Laravel 10.x</li>
+                        <li>MySQL 8.0</li>
+                        <li>JWT para autenticação</li>
+                        <li>Spatie Laravel-Permission para controle de acesso</li>
+                        <li>Laravel Media Library para gestão de arquivos</li>
+                    </ul>
+                </div>
+                
+                <h3>Funcionalidades Implementadas</h3>
+                <ul>
+                    <li>Sistema completo de autenticação e autorização com JWT</li>
+                    <li>Gestão de imóveis com imagens, características e localização</li>
+                    <li>Cadastro de pessoas (clientes, proprietários, corretores)</li>
+                    <li>Controle financeiro com transações, comissões e relatórios</li>
+                    <li>Dashboard com indicadores e métricas importantes</li>
+                    <li>Gestão de documentos e arquivos</li>
+                    <li>Configurações do sistema</li>
+                    <li>Controle de bancos e contas bancárias</li>
+                    <li>Relatórios financeiros e gerenciais</li>
+                </ul>
+            </section>
+
+            <section id="estrutura-banco-dados">
+                <h2>Estrutura do Banco de Dados</h2>
+                
+                <h3>Principais Entidades</h3>
+                <ul>
+                    <li><strong>Imóveis (properties)</strong>: Cadastro completo dos imóveis com características, valores e status</li>
+                    <li><strong>Imagens de Imóveis (property_images)</strong>: Imagens associadas aos imóveis com ordem e destaque</li>
+                    <li><strong>Pessoas (people)</strong>: Clientes, proprietários, locatários, funcionários e corretores</li>
+                    <li><strong>Tipos de Imóveis (property_types)</strong>: Categorização dos imóveis (casa, apartamento, terreno, etc.)</li>
+                    <li><strong>Características (features)</strong>: Elementos e facilidades disponíveis nos imóveis</li>
+                    <li><strong>Estados (states)</strong>, <strong>Cidades (cities)</strong> e <strong>Bairros (neighborhoods)</strong>: Localização dos imóveis</li>
+                    <li><strong>Visitas (visits)</strong>: Agendamento e acompanhamento de visitas aos imóveis</li>
+                    <li><strong>Contratos (contracts)</strong>: Documentos de venda, locação e propostas</li>
+                    <li><strong>Transações Financeiras (transactions)</strong>: Controle de contas a pagar/receber</li>
+                    <li><strong>Comissões (commissions)</strong>: Comissões de corretores associadas a contratos</li>
+                    <li><strong>Tipos de Comissão (commission_types)</strong>: Modelos de comissão com percentuais predefinidos</li>
+                    <li><strong>Documentos (documents)</strong>: Documentos associados a várias entidades (imóveis, contratos, pessoas)</li>
+                    <li><strong>Tipos de Documento (document_types)</strong>: Categorização dos documentos no sistema</li>
+                    <li><strong>Bancos (banks)</strong>: Cadastro de instituições bancárias</li>
+                    <li><strong>Contas Bancárias (bank_accounts)</strong>: Dados bancários de pessoas e da empresa</li>
+                    <li><strong>Frequências (frequencies)</strong>: Períodos para pagamentos e recebimentos</li>
+                    <li><strong>Tipos de Pagamento (payment_types)</strong>: Formas de pagamento disponíveis</li>
+                    <li><strong>Cargos (roles)</strong>: Funções de usuários no sistema com permissões específicas</li>
+                    <li><strong>Configurações do Sistema (system_settings)</strong>: Parâmetros de configuração global</li>
+                </ul>
+
+                <h3>Relacionamentos Principais</h3>
+                <ul>
+                    <li>Um <strong>Imóvel</strong> pertence a um <strong>Tipo de Imóvel</strong>, a uma <strong>Cidade</strong>, a um <strong>Bairro</strong> e a um <strong>Proprietário</strong> (pessoa)</li>
+                    <li>Um <strong>Imóvel</strong> pode ter muitas <strong>Características</strong>, <strong>Imagens</strong>, <strong>Visitas</strong>, <strong>Contratos</strong> e <strong>Transações</strong></li>
+                    <li>Um <strong>Estado</strong> possui muitas <strong>Cidades</strong></li>
+                    <li>Uma <strong>Cidade</strong> possui muitos <strong>Bairros</strong> e <strong>Imóveis</strong></li>
+                    <li>Uma <strong>Pessoa</strong> pode ser proprietária de vários <strong>Imóveis</strong>, participar de várias <strong>Visitas</strong> e <strong>Contratos</strong></li>
+                    <li>Um <strong>Contrato</strong> pode ter várias <strong>Comissões</strong> e <strong>Transações</strong> associadas</li>
+                </ul>
+            </section>
+
+            <section id="autenticacao-autorizacao">
+                <h2>Autenticação e Autorização</h2>
+                <p>O sistema utiliza autenticação baseada em token JWT (JSON Web Token) para acesso à API. O controle de permissões é gerenciado através de funções (roles) e permissões específicas usando o pacote Spatie Laravel-Permission.</p>
+                
+                <h3>Papéis (Roles)</h3>
+                <ul>
+                    <li><strong>admin</strong>: Acesso completo a todas as funcionalidades</li>
+                    <li><strong>manager</strong>: Gerenciamento de imóveis, pessoas, visitas, contratos e transações</li>
+                    <li><strong>agent</strong>: Gestão de visitas, visualização e edição de imóveis, cadastro de clientes</li>
+                    <li><strong>client</strong>: Visualização de imóveis e agendamento de visitas</li>
+                </ul>
+
+                <h3>Rotas de Autenticação</h3>
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/auth/login</code>
+                    <p>Autentica um usuário e retorna o token JWT.</p>
+                    <pre>{
+  "email": "usuario@exemplo.com",
+  "password": "senha123"
+}</pre>
+                    <p><strong>Resposta:</strong></p>
+                    <pre>{
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+  "token_type": "bearer",
+  "expires_in": 3600,
+  "user": {
+    "id": 1,
+    "name": "Nome do Usuário",
+    "email": "usuario@exemplo.com",
+    "roles": ["admin"]
+  }
+}</pre>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/auth/register</code>
+                    <p>Registra um novo usuário cliente no sistema.</p>
+                    <pre>{
+  "name": "Nome do Usuário",
+  "email": "usuario@exemplo.com",
+  "password": "senha123",
+  "password_confirmation": "senha123",
+  "phone": "(11) 99999-9999"
+}</pre>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/auth/logout</code>
+                    <p>Invalida o token JWT atual.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/auth/refresh</code>
+                    <p>Atualiza o token JWT atual.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/auth/me</code>
+                    <p>Retorna os dados do usuário autenticado.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/auth/profile</code>
+                    <p>Atualiza os dados do perfil do usuário autenticado.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <pre>{
+  "name": "Novo Nome",
+  "email": "novo@email.com",
+  "phone": "(11) 88888-8888",
+  "current_password": "senha_atual",
+  "password": "nova_senha",
+  "password_confirmation": "nova_senha"
+}</pre>
+                </div>
+
+                <h3>Middleware de Autenticação</h3>
+                <p>Todas as rotas protegidas utilizam o middleware <code>auth:api</code> para verificar a autenticação do usuário através do token JWT.</p>
+
+                <h3>Middleware de Autorização</h3>
+                <p>O sistema utiliza os middlewares <code>role:nome_do_papel</code> e <code>permission:nome_da_permissao</code> para controlar o acesso às rotas com base nos papéis e permissões do usuário.</p>
+                
+                <div class="notice">
+                    <strong>Exemplo de rota protegida:</strong>
+                    <pre>Route::post('properties', [PropertyController::class, 'store'])->middleware('auth:api');</pre>
+                    <strong>Exemplo de rota com verificação de papel:</strong>
+                    <pre>Route::group(['middleware' => ['auth:api', 'role:admin|manager']], function () {
+    Route::get('dashboard/financial/summary', [DashboardController::class, 'financialSummary']);
+});</pre>
+                </div>
+            </section>
+
+            <section id="api-endpoints">
+                <h2>API - Endpoints</h2>
+                <p>Esta seção documenta os principais endpoints da API, organizados por recursos.</p>
+            </section>
+
+            <section id="imoveis">
+                <h2>Imóveis</h2>
+                <p>API para gerenciamento de imóveis, incluindo listagem, busca, criação, atualização e exclusão.</p>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/properties</code>
+                    <p>Lista todos os imóveis com paginação.</p>
+                    <p><strong>Parâmetros de Query:</strong></p>
+                    <ul>
+                        <li><code>page</code>: Número da página (padrão: 1)</li>
+                        <li><code>per_page</code>: Itens por página (padrão: 15)</li>
+                        <li><code>sort_by</code>: Campo para ordenação (padrão: created_at)</li>
+                        <li><code>sort_dir</code>: Direção da ordenação (asc ou desc, padrão: desc)</li>
+                        <li><code>status</code>: Filtro por status (active, pending, sold, rented)</li>
+                        <li><code>type</code>: Filtro por tipo de imóvel (ID)</li>
+                        <li><code>city</code>: Filtro por cidade (ID)</li>
+                        <li><code>neighborhood</code>: Filtro por bairro (ID)</li>
+                        <li><code>min_price</code>: Preço mínimo</li>
+                        <li><code>max_price</code>: Preço máximo</li>
+                        <li><code>bedrooms</code>: Número de quartos</li>
+                        <li><code>bathrooms</code>: Número de banheiros</li>
+                        <li><code>garage_spots</code>: Vagas de garagem</li>
+                        <li><code>featured</code>: Apenas imóveis destacados (true/false)</li>
+                    </ul>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/properties/search</code>
+                    <p>Busca avançada de imóveis.</p>
+                    <p><strong>Parâmetros de Query:</strong></p>
+                    <ul>
+                        <li><code>q</code>: Termo de busca (título, descrição, referência)</li>
+                        <li><code>purpose</code>: Finalidade (sale, rent)</li>
+                        <li><code>features[]</code>: Array de IDs de características</li>
+                        <li>Todos os parâmetros do endpoint GET /api/properties</li>
+                    </ul>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/properties/{id}</code>
+                    <p>Retorna os detalhes de um imóvel específico.</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/properties</code>
+                    <p>Cria um novo imóvel.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Corpo da Requisição:</strong></p>
+                    <pre>{
+  "title": "Casa com 3 quartos em Alphaville",
+  "description": "Ampla casa com 3 quartos, sendo 2 suítes...",
+  "reference": "REF123",
+  "property_type_id": 1,
+  "purpose": "sale",
+  "status": "active",
+  "price": 850000,
+  "rental_price": null,
+  "condominium_fee": 500,
+  "iptu": 2000,
+  "area": 180,
+  "built_area": 150,
+  "bedrooms": 3,
+  "bathrooms": 2,
+  "garage_spots": 2,
+  "address": "Rua das Flores, 123",
+  "complement": "Bloco A",
+  "neighborhood_id": 1,
+  "city_id": 1,
+  "state_id": 1,
+  "postal_code": "06453-000",
+  "latitude": -23.5505,
+  "longitude": -46.6333,
+  "owner_id": 1,
+  "featured": false,
+  "features": [1, 3, 5, 8]
+}</pre>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method put">PUT</span>
+                    <code>/api/properties/{id}</code>
+                    <p>Atualiza um imóvel existente.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Corpo da Requisição:</strong> Mesmos campos do endpoint POST</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method delete">DELETE</span>
+                    <code>/api/properties/{id}</code>
+                    <p>Remove um imóvel.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method put">PUT</span>
+                    <code>/api/properties/{id}/featured</code>
+                    <p>Marca ou desmarca um imóvel como destacado.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <pre>{
+  "featured": true
+}</pre>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method put">PUT</span>
+                    <code>/api/properties/{id}/status</code>
+                    <p>Altera o status de um imóvel.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <pre>{
+  "status": "sold"
+}</pre>
+                    <p><strong>Status possíveis:</strong> active, pending, sold, rented, inactive</p>
+                </div>
+            </section>
+
+            <section id="imagens-propriedades">
+                <h2>Imagens de Propriedades</h2>
+                <p>API para gerenciamento de imagens de imóveis.</p>
+
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/properties/{property}/images/upload</code>
+                    <p>Faz upload de uma ou mais imagens para um imóvel.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Corpo da Requisição:</strong> Form-data com campo 'images[]' contendo os arquivos de imagem</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/properties/{property}/images/reorder</code>
+                    <p>Reordena as imagens de um imóvel.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <pre>{
+  "images": [5, 2, 3, 1, 4]
+}</pre>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method put">PUT</span>
+                    <code>/api/properties/images/{image}/featured</code>
+                    <p>Marca ou desmarca uma imagem como principal.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <pre>{
+  "featured": true
+}</pre>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method delete">DELETE</span>
+                    <code>/api/properties/images/{image}</code>
+                    <p>Remove uma imagem de um imóvel.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                </div>
+            </section>
+
+            <section id="tipos-imoveis">
+                <h2>Tipos de Imóveis</h2>
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/property-types</code>
+                    <p>Lista todos os tipos de imóveis cadastrados.</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/property-types/{id}</code>
+                    <p>Retorna os detalhes de um tipo de imóvel específico.</p>
+                </div>
+            </section>
+
+            <section id="caracteristicas">
+                <h2>Características</h2>
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/features</code>
+                    <p>Lista todas as características disponíveis para imóveis.</p>
+                </div>
+            </section>
+
+            <section id="pessoas">
+                <h2>Clientes/Pessoas</h2>
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/people</code>
+                    <p>Lista todas as pessoas cadastradas (requer permissão 'view people').</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/people/{id}</code>
+                    <p>Retorna os detalhes de uma pessoa específica (requer permissão 'view people').</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/people</code>
+                    <p>Cadastra uma nova pessoa no sistema (requer permissão 'create people').</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method put">PUT</span>
+                    <code>/api/people/{id}</code>
+                    <p>Atualiza os dados de uma pessoa (requer permissão 'edit people').</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method delete">DELETE</span>
+                    <code>/api/people/{id}</code>
+                    <p>Remove uma pessoa (soft delete - requer permissão 'delete people').</p>
+                </div>
+            </section>
+
+            <section id="cidades-bairros">
+                <h2>Cidades e Bairros</h2>
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/cities</code>
+                    <p>Lista todas as cidades cadastradas.</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/cities/{city_id}/neighborhoods</code>
+                    <p>Lista todos os bairros de uma cidade específica.</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/neighborhoods</code>
+                    <p>Lista todos os bairros cadastrados.</p>
+                </div>
+            </section>
+
+            <section id="visitas">
+                <h2>Visitas</h2>
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/visits</code>
+                    <p>Lista todas as visitas (requer permissão 'view visits').</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/visits</code>
+                    <p>Agenda uma nova visita (requer permissão 'create visits').</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method put">PUT</span>
+                    <code>/api/visits/{id}/complete</code>
+                    <p>Marca uma visita como concluída (requer permissão 'complete visits').</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method put">PUT</span>
+                    <code>/api/visits/{id}/cancel</code>
+                    <p>Cancela uma visita agendada (requer permissão 'edit visits').</p>
+                </div>
+            </section>
+
+            <section id="contratos">
+                <h2>Contratos</h2>
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/contracts</code>
+                    <p>Lista todos os contratos (requer permissão 'view contracts').</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/contracts</code>
+                    <p>Cria um novo contrato (requer permissão 'create contracts').</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/contracts/{id}/generate-pdf</code>
+                    <p>Gera o PDF de um contrato específico (requer permissão 'generate contract pdf').</p>
+                </div>
+            </section>
+
+            <section id="financeiro">
+                <h2>Financeiro</h2>
+                <p>API para gerenciamento de transações financeiras, incluindo contas a pagar e receber.</p>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/financial/transactions</code>
+                    <p>Lista todas as transações financeiras com filtros e paginação.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Parâmetros de Query:</strong></p>
+                    <ul>
+                        <li><code>type</code>: Tipo de transação (income, expense)</li>
+                        <li><code>status</code>: Status da transação (pending, paid, canceled)</li>
+                        <li><code>start_date</code>: Data inicial (formato: YYYY-MM-DD)</li>
+                        <li><code>end_date</code>: Data final (formato: YYYY-MM-DD)</li>
+                        <li><code>category_id</code>: ID da categoria</li>
+                        <li><code>min_amount</code>: Valor mínimo</li>
+                        <li><code>max_amount</code>: Valor máximo</li>
+                        <li><code>page</code>: Número da página</li>
+                        <li><code>per_page</code>: Itens por página</li>
+                    </ul>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/financial/transactions/summary</code>
+                    <p>Retorna um resumo das transações financeiras.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/financial/transactions</code>
+                    <p>Cria uma nova transação financeira.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <pre>{
+  "description": "Pagamento de comissão",
+  "amount": 5000,
+  "type": "expense",
+  "due_date": "2024-06-15",
+  "category_id": 3,
+  "payment_type_id": 1,
+  "bank_account_id": 2,
+  "person_id": 5,
+  "property_id": 42,
+  "contract_id": 18,
+  "notes": "Comissão referente à venda do imóvel #42"
+}</pre>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method put">PUT</span>
+                    <code>/api/financial/transactions/{transaction}</code>
+                    <p>Atualiza uma transação financeira existente.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/financial/transactions/{transaction}/mark-as-paid</code>
+                    <p>Marca uma transação como paga.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <pre>{
+  "payment_date": "2024-06-10",
+  "payment_amount": 5000,
+  "payment_type_id": 1,
+  "bank_account_id": 2,
+  "notes": "Pagamento efetuado via transferência bancária"
+}</pre>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method post">POST</span>
+                    <code>/api/financial/transactions/{transaction}/cancel</code>
+                    <p>Cancela uma transação financeira.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <pre>{
+  "cancel_reason": "Pagamento em duplicidade"
+}</pre>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/financial/commissions</code>
+                    <p>Lista todas as comissões de corretores com estatísticas detalhadas.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Parâmetros de Query:</strong></p>
+                    <ul>
+                        <li><code>start_date</code>: Data inicial (formato: YYYY-MM-DD)</li>
+                        <li><code>end_date</code>: Data final (formato: YYYY-MM-DD)</li>
+                        <li><code>person_id</code>: ID do corretor</li>
+                        <li><code>status</code>: Status da comissão (pending, paid, canceled)</li>
+                        <li><code>property_id</code>: ID do imóvel</li>
+                        <li><code>contract_id</code>: ID do contrato</li>
+                        <li><code>sort_by</code>: Campo para ordenação</li>
+                        <li><code>sort_order</code>: Direção da ordenação (asc, desc)</li>
+                    </ul>
+                    <p><strong>Resposta:</strong></p>
+                    <pre>{
+  "commissions": {
+    "data": [...],
+    "total": 45,
+    "per_page": 15,
+    "current_page": 1,
+    "last_page": 3
+  },
+  "stats": {
+    "total_count": 45,
+    "total_amount": 225000,
+    "paid_amount": 180000,
+    "pending_amount": 45000,
+    "by_agent": [
+      {
+        "agent_id": 5,
+        "agent_name": "João Silva",
+        "total_amount": 85000,
+        "count": 17
+      },
+      ...
+    ]
+  }
+}</pre>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/financial/rentals</code>
+                    <p>Lista todas as transações relacionadas a aluguéis com estatísticas detalhadas.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Parâmetros de Query:</strong></p>
+                    <ul>
+                        <li><code>start_date</code>: Data inicial (formato: YYYY-MM-DD)</li>
+                        <li><code>end_date</code>: Data final (formato: YYYY-MM-DD)</li>
+                        <li><code>person_id</code>: ID do locatário/proprietário</li>
+                        <li><code>property_id</code>: ID do imóvel</li>
+                        <li><code>status</code>: Status do pagamento (pending, paid, canceled)</li>
+                        <li><code>min_amount</code>: Valor mínimo</li>
+                        <li><code>max_amount</code>: Valor máximo</li>
+                    </ul>
+                    <p><strong>Resposta:</strong></p>
+                    <pre>{
+  "rentals": {
+    "data": [...],
+    "total": 120,
+    "per_page": 15,
+    "current_page": 1,
+    "last_page": 8
+  },
+  "stats": {
+    "total_count": 120,
+    "total_amount": 360000,
+    "paid_amount": 320000,
+    "pending_amount": 40000,
+    "monthly_income": [...],
+    "by_neighborhood": [...],
+    "by_property_type": [...],
+    "average_by_property_type": [...]
+  }
+}</pre>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/financial/sales</code>
+                    <p>Lista todas as transações relacionadas a vendas com estatísticas detalhadas.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Parâmetros de Query:</strong></p>
+                    <ul>
+                        <li><code>start_date</code>: Data inicial (formato: YYYY-MM-DD)</li>
+                        <li><code>end_date</code>: Data final (formato: YYYY-MM-DD)</li>
+                        <li><code>person_id</code>: ID do comprador/vendedor</li>
+                        <li><code>property_id</code>: ID do imóvel</li>
+                        <li><code>status</code>: Status do pagamento (pending, paid, canceled)</li>
+                        <li><code>min_amount</code>: Valor mínimo</li>
+                        <li><code>max_amount</code>: Valor máximo</li>
+                    </ul>
+                    <p><strong>Resposta:</strong></p>
+                    <pre>{
+  "sales": {
+    "data": [...],
+    "total": 35,
+    "per_page": 15,
+    "current_page": 1,
+    "last_page": 3
+  },
+  "stats": {
+    "total_count": 35,
+    "total_amount": 17500000,
+    "paid_amount": 15000000,
+    "pending_amount": 2500000,
+    "monthly_trend": [...],
+    "by_property_type": [...]
+  }
+}</pre>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/financial/cash-flow</code>
+                    <p>Retorna o fluxo de caixa em um período específico, agrupado por data.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Parâmetros de Query:</strong></p>
+                    <ul>
+                        <li><code>start_date</code>: Data inicial (formato: YYYY-MM-DD)</li>
+                        <li><code>end_date</code>: Data final (formato: YYYY-MM-DD)</li>
+                        <li><code>group_by</code>: Agrupamento (day, week, month, year)</li>
+                    </ul>
+                    <p><strong>Resposta:</strong></p>
+                    <pre>[
+  {
+    "date": "2024-06-01",
+    "income": 15000,
+    "expense": 5000,
+    "balance": 10000
+  },
+  {
+    "date": "2024-06-02",
+    "income": 8000,
+    "expense": 3000,
+    "balance": 5000
+  },
+  ...
+]</pre>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/financial/bank-statement</code>
+                    <p>Retorna o extrato de caixa detalhado com saldo inicial, final e todas as transações do período.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Parâmetros de Query:</strong></p>
+                    <ul>
+                        <li><code>start_date</code>: Data inicial (formato: YYYY-MM-DD) - <strong>obrigatório</strong></li>
+                        <li><code>end_date</code>: Data final (formato: YYYY-MM-DD) - <strong>obrigatório</strong></li>
+                        <li><code>bank_account_id</code>: ID da conta bancária (opcional)</li>
+                    </ul>
+                    <p><strong>Resposta:</strong></p>
+                    <pre>{
+  "initial_balance": 25000,
+  "final_balance": 42500,
+  "period": {
+    "start_date": "2024-06-01",
+    "end_date": "2024-06-30"
+  },
+  "total_income": 35000,
+  "total_expense": 17500,
+  "transactions": [
+    {
+      "id": 123,
+      "description": "Recebimento de aluguel",
+      "amount": 2500,
+      "type": "receivable",
+      "due_date": "2024-06-05",
+      "payment_date": "2024-06-05",
+      "status": "paid",
+      "running_balance": 27500,
+      "person": {...},
+      "property": {...}
+    },
+    ...
+  ]
+}</pre>
+                </div>
+            </section>
+            
+            <section id="relatorios">
+                <h2>Relatórios</h2>
+                <p>API para geração de relatórios gerenciais. Todos os endpoints requerem papel de administrador.</p>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/reports/financial</code>
+                    <p>Gera relatório financeiro com receitas, despesas e saldo.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Parâmetros de Query:</strong></p>
+                    <ul>
+                        <li><code>start_date</code>: Data inicial (formato: YYYY-MM-DD)</li>
+                        <li><code>end_date</code>: Data final (formato: YYYY-MM-DD)</li>
+                        <li><code>group_by</code>: Agrupamento (day, week, month, year)</li>
+                        <li><code>format</code>: Formato do relatório (json, csv, pdf)</li>
+                    </ul>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/reports/properties</code>
+                    <p>Gera relatório de imóveis com filtros diversos.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Parâmetros de Query:</strong></p>
+                    <ul>
+                        <li><code>status</code>: Status dos imóveis</li>
+                        <li><code>type</code>: Tipo de imóvel</li>
+                        <li><code>city</code>: ID da cidade</li>
+                        <li><code>format</code>: Formato do relatório (json, csv, pdf)</li>
+                    </ul>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/reports/commissions</code>
+                    <p>Gera relatório de comissões pagas a corretores.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Parâmetros de Query:</strong></p>
+                    <ul>
+                        <li><code>start_date</code>: Data inicial (formato: YYYY-MM-DD)</li>
+                        <li><code>end_date</code>: Data final (formato: YYYY-MM-DD)</li>
+                        <li><code>agent_id</code>: ID do corretor</li>
+                        <li><code>status</code>: Status da comissão (pending, paid, canceled)</li>
+                        <li><code>format</code>: Formato do relatório (json, csv, pdf)</li>
+                    </ul>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/reports/visits</code>
+                    <p>Gera relatório de visitas aos imóveis.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Parâmetros de Query:</strong></p>
+                    <ul>
+                        <li><code>start_date</code>: Data inicial (formato: YYYY-MM-DD)</li>
+                        <li><code>end_date</code>: Data final (formato: YYYY-MM-DD)</li>
+                        <li><code>status</code>: Status da visita (scheduled, completed, canceled)</li>
+                        <li><code>agent_id</code>: ID do corretor</li>
+                        <li><code>property_id</code>: ID do imóvel</li>
+                        <li><code>format</code>: Formato do relatório (json, csv, pdf)</li>
+                    </ul>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/reports/contracts</code>
+                    <p>Gera relatório de contratos.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Parâmetros de Query:</strong></p>
+                    <ul>
+                        <li><code>start_date</code>: Data inicial (formato: YYYY-MM-DD)</li>
+                        <li><code>end_date</code>: Data final (formato: YYYY-MM-DD)</li>
+                        <li><code>type</code>: Tipo de contrato (sale, rental)</li>
+                        <li><code>status</code>: Status do contrato</li>
+                        <li><code>format</code>: Formato do relatório (json, csv, pdf)</li>
+                    </ul>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/reports/sales</code>
+                    <p>Gera relatório de vendas.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/reports/rentals</code>
+                    <p>Gera relatório de aluguéis.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/reports/accounts-payable</code>
+                    <p>Gera relatório de contas a pagar.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="http-method get">GET</span>
+                    <code>/api/reports/accounts-receivable</code>
+                    <p>Gera relatório de contas a receber.</p>
+                    <p><strong>Cabeçalho:</strong> Authorization: Bearer {token}</p>
+                </div>
+            </section>
+
+            <section id="implementacoes-recentes">
+                <h2>Implementações Recentes</h2>
+                <p>Lista das funcionalidades implementadas recentemente no sistema:</p>
+                
+                <ul>
+                    <li><strong>Dashboard Financeiro</strong>: Visualização de métricas financeiras, receitas, despesas e saldo</li>
+                    <li><strong>Gestão de Imagens</strong>: Sistema completo de upload, ordenação e destaque de imagens de imóveis</li>
+                    <li><strong>Relatórios em PDF</strong>: Exportação de relatórios em formato PDF</li>
+                    <li><strong>Configurações do Sistema</strong>: Interface para gerenciar configurações globais</li>
+                    <li><strong>Integração com Google Analytics e Tag Manager</strong>: Configuração de códigos de rastreamento</li>
+                    <li><strong>Gestão de Documentos</strong>: Upload e categorização de documentos para imóveis, contratos e pessoas</li>
+                    <li><strong>Controle de Permissões</strong>: Sistema avançado de papéis e permissões</li>
+                    <li><strong>Fluxo de Caixa</strong>: Visualização e gestão do fluxo de caixa</li>
+                    <li><strong>Extrato de Caixa Detalhado</strong>: Extrato completo com saldo inicial, final e histórico de transações</li>
+                    <li><strong>Estatísticas de Comissões</strong>: Visualização detalhada de comissões por corretor com gráficos e métricas</li>
+                    <li><strong>Relatórios de Vendas</strong>: Análise de vendas por período, tipo de imóvel e localização</li>
+                    <li><strong>Relatórios de Aluguéis</strong>: Análise de aluguéis por período, tipo de imóvel e bairro, incluindo médias de valores</li>
+                    <li><strong>Extrato Bancário Avançado</strong>: Visualização detalhada de transações com saldo inicial, final e cálculo de saldo corrente</li>
+                    <li><strong>Análise de Comissões por Agente</strong>: Estatísticas detalhadas de desempenho de corretores com filtros avançados</li>
+                    <li><strong>Relatórios de Tendências de Vendas</strong>: Análise mensal de vendas com gráficos de tendências e comparativos</li>
+                    <li><strong>Análise de Aluguéis por Bairro</strong>: Mapeamento de valores médios de aluguel por região e tipo de imóvel</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+
+    <a href="#" class="back-to-top">&#8679;</a>
+
+    <footer>
+        <p>Laranja Real Imóveis &copy; 2025 - Todos os direitos reservados</p>
+        <p>Última atualização: Julho de 2024</p>
+    </footer>
+
+    <script>
+        // Script para marcar o link ativo na sidebar quando o usuário rola a página
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.sidebar a');
+            
+            function highlightNav() {
+                let scrollY = window.pageYOffset;
+                
+                sections.forEach(section => {
+                    const sectionHeight = section.offsetHeight;
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionId = section.getAttribute('id');
+                    
+                    if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === '#' + sectionId) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', highlightNav);
+        });
+    </script>
+</body>
+</html>

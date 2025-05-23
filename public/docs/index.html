@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação - Laranja Real Imóveis</title>
+    <style>
+        :root {
+            --primary-color: #ff6b00;
+            --secondary-color: #333;
+            --text-color: #444;
+            --border-color: #ddd;
+            --light-bg: #f8f9fa;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: var(--primary-color);
+        }
+        h2 {
+            color: var(--secondary-color);
+            margin-top: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        h3 {
+            margin-top: 25px;
+        }
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .card h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        .card-links {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .card-links a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            padding: 5px 0;
+            border-bottom: 1px dashed var(--border-color);
+            transition: all 0.2s ease;
+        }
+        .card-links a:hover {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Documentação Completa - Laranja Real Imóveis</h1>
+        <p>Guia central para toda a documentação do sistema imobiliário</p>
+    </header>
+
+    <div class="card-container">
+        <div class="card">
+            <h3>Backend (Laravel)</h3>
+            <p>Documentação do backend desenvolvido com Laravel, incluindo API, modelos e configurações.</p>
+            <div class="card-links">
+                <a href="backend/index.html">Documentação Completa do Backend</a>
+                <a href="backend/index.html#estrutura-banco-dados">Estrutura do Banco de Dados</a>
+                <a href="backend/index.html#api-endpoints">API Endpoints</a>
+                <a href="backend/index.html#autenticacao-autorizacao">Autenticação e Autorização</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Frontend (React + TypeScript)</h3>
+            <p>Documentação do frontend React, incluindo arquitetura, componentes e integração com a API.</p>
+            <div class="card-links">
+                <a href="frontend/index.html">Visão Geral do Frontend</a>
+                <a href="frontend/components.html">Componentes UI</a>
+                <a href="frontend/hooks.html">Hooks Personalizados</a>
+                <a href="frontend/api-integration.html">Integração com API</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Instalação e Configuração</h3>
+            <p>Guias para instalar, configurar e executar o sistema em diferentes ambientes.</p>
+            <div class="card-links">
+                <a href="backend/index.html#instalacao-configuracao">Configuração do Backend</a>
+                <a href="frontend/index.html#deployment-e-build">Configuração do Frontend</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Recursos e Integrações</h3>
+            <p>Documentação de recursos e integrações com serviços externos.</p>
+            <div class="card-links">
+                <a href="backend/index.html#recursos-midia">Recursos de Mídia</a>
+                <a href="backend/index.html#integracao-frontend">Integração Backend-Frontend</a>
+            </div>
+        </div>
+    </div>
+
+    <section>
+        <h2>Visão Geral do Sistema</h2>
+        <p>O sistema Laranja Real Imóveis é uma aplicação web completa para gestão imobiliária, desenvolvida com Laravel (backend) e React (frontend). A aplicação permite o gerenciamento de imóveis, clientes, visitas, contratos e transações financeiras.</p>
+
+        <h3>Arquitetura</h3>
+        <p>O sistema segue uma arquitetura de cliente-servidor, com separação clara entre frontend e backend:</p>
+        <ul>
+            <li><strong>Backend:</strong> API RESTful desenvolvida com Laravel 10, seguindo os princípios de APIs modernas e seguras.</li>
+            <li><strong>Frontend:</strong> Aplicação SPA (Single Page Application) construída com React 18 e TypeScript, utilizando hooks e componentes funcionais.</li>
+            <li><strong>Autenticação:</strong> Sistema baseado em JWT (JSON Web Tokens) para autenticação e autorização de usuários.</li>
+            <li><strong>Banco de Dados:</strong> MySQL 8 com migrações e seeders para fácil instalação e atualização.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Fluxos de Usuário</h2>
+        <p>O sistema suporta diferentes tipos de usuários e fluxos de navegação:</p>
+        <ul>
+            <li><strong>Clientes:</strong> Podem procurar imóveis, agendar visitas e acompanhar propostas/contratos.</li>
+            <li><strong>Corretores:</strong> Gerenciam visitas, clientes e imóveis, além de criar propostas e contratos.</li>
+            <li><strong>Gerentes:</strong> Supervisionam todas as operações, incluindo financeiras e relatórios.</li>
+            <li><strong>Administradores:</strong> Gerenciam todos os aspectos do sistema, incluindo usuários e configurações.</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>Laranja Real Imóveis &copy; 2023-2024 - Todos os direitos reservados</p>
+        <p>Última atualização: Maio de 2024</p>
+    </footer>
+</body>
+</html> 
